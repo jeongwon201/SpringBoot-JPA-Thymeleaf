@@ -1,13 +1,11 @@
 package org.hdcd.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -20,18 +18,25 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString(exclude="codeDetails")
+@ToString
+@EqualsAndHashCode(of={"groupCode", "codeValue"})
 @Entity
-@EqualsAndHashCode(of="groupCode")
-@Table(name="code_group")
-public class CodeGroup {
+@IdClass(CodeDetailId.class)
+@Table(name="code_detail")
+public class CodeDetail {
 	
 	@Id
 	@Column(length=3)
 	private String groupCode;
 
+	@Id
+	@Column(length = 3)
+	private String codeValue;
+	
 	@Column(length = 30, nullable = false)
-	private String groupName;
+	private String codeName;
+	
+	private int sortSeq;
 	
 	@Column(length = 1)
 	private String useYn = "Y";
@@ -41,8 +46,4 @@ public class CodeGroup {
 	
 	@UpdateTimestamp
 	private LocalDateTime updDate;
-	
-	@OneToMany
-	@JoinColumn(name="groupCode")
-	private List<CodeDetail> codeDetails;
 }
