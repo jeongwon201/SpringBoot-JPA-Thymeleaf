@@ -13,7 +13,7 @@
 			
 			<tr sec:authorize="isAuthenticated()">
 				<td width="180">
-					<form action="../auth/logout.html" th:href="@{/auth/logout}" method="POST">
+					<form action="../auth/logout.html" th:action="@{/auth/logout}" method="POST">
 						<span sec:authentication="principal.username">사용자</span> 님 <button th:text="#{header.logout}">로그아웃</button>
 					</form>
 				</td>

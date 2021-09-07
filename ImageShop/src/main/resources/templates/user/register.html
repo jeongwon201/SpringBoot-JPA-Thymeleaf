@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate="layouts/main_template">
 
@@ -47,7 +48,11 @@
 		
 		<div>
 			<button type="submit" id="btnRegister" th:text="#{action.register}">등록</button>
-			<button type="submit" id="btnList" th:text="#{action.list}">목록</button>
+			
+			<th:block sec:authorize="hasRole('ADMIN')">
+				<button type="submit" id="btnList" th:text="#{action.list}">목록</button>
+			</th:block>
+			
 		</div>
 		
 		<script th:inline="javascript">
@@ -59,9 +64,11 @@
 					formObj.submit();
 				});
 				
-				$("#btnList").on("click", function() {
-					self.location = "list";
-				});
+				[#th:block sec:authorize="hasRole('ADMIN')"]
+					#("btnList").on("click", function() {
+						self.location = "list";
+					});
+				[/th:block]
 				
 			});
 		</script>

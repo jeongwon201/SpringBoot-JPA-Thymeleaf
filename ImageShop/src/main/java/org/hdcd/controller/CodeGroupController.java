@@ -2,6 +2,7 @@ package org.hdcd.controller;
 
 import org.hdcd.domain.CodeGroup;
 import org.hdcd.service.CodeGroupService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/codegroup")
+@PreAuthorize("hasRole('ADMIN')")
 public class CodeGroupController {
 
 	private final CodeGroupService service;
