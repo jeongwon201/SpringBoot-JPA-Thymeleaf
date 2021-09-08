@@ -3,12 +3,16 @@ package org.hdcd.controller;
 import org.hdcd.common.security.domain.CustomUser;
 import org.hdcd.domain.Board;
 import org.hdcd.domain.Member;
+import org.hdcd.domain.PageRequestVO;
+import org.hdcd.dto.PaginationDTO;
 import org.hdcd.service.BoardService;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -45,25 +49,31 @@ public class BoardController {
 	}
 	
 	@GetMapping("/list")
-	public void list(Model model) throws Exception {
-		model.addAttribute("list", service.list());
+	public void list(@ModelAttribute("pgrq") PageRequestVO pageRequestVO, Model model) throws Exception {
+		Page<Board> page = service.list(pageRequestVO);
+		
+		model.addAttribute("pgntn", new PaginationDTO<Board>(page));
 	}
 	
 	@GetMapping("/read")
-	public void read(Long boardNo, Model model) throws Exception {
+	public void read(Long boardNo, @ModelAttribute("pgrq") PageRequestVO pageRequestVO, Model model) throws Exception {
 		model.addAttribute(service.read(boardNo));
 	}
 	
 	@GetMapping("/modify")
 	@PreAuthorize("hasRole('MEMBER')")
-	public void modifyForm(Long boardNo, Model model) throws Exception {
+	public void modifyForm(Long boardNo, @ModelAttribute("pgrq") PageRequestVO pageRequestVO, Model model) throws Exception {
 		model.addAttribute(service.read(boardNo));
 	}
 	
 	@PostMapping("/modify")
 	@PreAuthorize("hasRole('MEMBER') and principal.username == #board.writer")
-	public String modify(Board board, RedirectAttributes rttr) throws Exception {
+	public String modify(Board board, PageRequestVO pageRequestVO, RedirectAttributes rttr) throws Exception {
 		service.modify(board);
+		
+		rttr.addFlashAttribute("page", pageRequestVO.getPage());
+		rttr.addFlashAttribute("sizePerPage", pageRequestVO.getSizePerPage());
+
 		rttr.addFlashAttribute("msg", "SUCCESS");
 		
 		return "redirect:/board/list";
@@ -71,8 +81,11 @@ public class BoardController {
 	
 	@PostMapping("/remove")
 	@PreAuthorize("hasRole('MEMBER') and principal.username == #writer or hasRole('ADMIN')")
-	public String remove(Long boardNo, RedirectAttributes rttr, String writer) throws Exception {
+	public String remove(Long boardNo, PageRequestVO pageRequestVO, RedirectAttributes rttr, String writer) throws Exception {
 		service.remove(boardNo);
+		
+		rttr.addFlashAttribute("page", pageRequestVO.getPage());
+		rttr.addFlashAttribute("sizePerPage", pageRequestVO.getSizePerPage());
 		
 		rttr.addAttribute("msg", "SUCCESS");
 		

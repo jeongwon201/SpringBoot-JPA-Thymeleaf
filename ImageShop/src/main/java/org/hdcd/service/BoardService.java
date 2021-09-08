@@ -1,14 +1,14 @@
 package org.hdcd.service;
 
-import java.util.List;
-
 import org.hdcd.domain.Board;
+import org.hdcd.domain.PageRequestVO;
+import org.springframework.data.domain.Page;
 
 public interface BoardService {
 	
 	public void register(Board board) throws Exception;
 	
-	public List<Board> list() throws Exception;
+	public Page<Board> list(PageRequestVO pageRequestVO) throws Exception;
 	
 	public Board read(Long boardNo) throws Exception;
 	

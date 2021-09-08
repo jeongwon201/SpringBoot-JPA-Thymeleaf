@@ -1,9 +1,11 @@
 package org.hdcd.service;
 
-import java.util.List;
-
 import org.hdcd.domain.Board;
+import org.hdcd.domain.PageRequestVO;
 import org.hdcd.repository.BoardRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,15 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<Board> list() throws Exception {
-		return repository.findAll(Sort.by(Direction.DESC, "boardNo"));
+	public Page<Board> list(PageRequestVO pageRequestVO) throws Exception {
+		int pageNumber = pageRequestVO.getPage() -1;
+		int sizePerPage = pageRequestVO.getSizePerPage();
+		
+		Pageable pageRequest = PageRequest.of(pageNumber,  sizePerPage, Sort.Direction.DESC, "boardNo");
+		
+		Page<Board> page = repository.findAll(pageRequest);
+		
+		return page;
 	}
 
 	@Override
@@ -45,4 +54,5 @@ public class BoardServiceImpl implements BoardService {
 	public void remove(Long boardNo) throws Exception {
 		repository.deleteById(boardNo);
 	}
+
 }

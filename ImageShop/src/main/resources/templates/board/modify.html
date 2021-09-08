@@ -20,6 +20,9 @@
 			
 			<input type="hidden" name="boardNo" th:field="*{boardNo}" />
 			
+			<input type="hidden" name="page" th:value="${pgrq.page}" />
+			<input type="hidden" name="sizePerPage" th:value="${pgrq.sizePerPage}" />
+			
 			<table>
 				<tr>
 					<td th:text="#{board.title}">제목</td>
@@ -62,7 +65,7 @@
 				});
 				
 				$("#btnList").on("click", function() {
-					self.location = "/board/list";
+					self.location = "/board/list[(${pgrq.toUriString()})]";
 				});
 			});
 		</script>
