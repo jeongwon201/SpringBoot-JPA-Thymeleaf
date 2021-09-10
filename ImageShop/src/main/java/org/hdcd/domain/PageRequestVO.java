@@ -8,6 +8,9 @@ public class PageRequestVO {
 	private int page;
 	private int sizePerPage;
 	
+	private String searchType;
+	private String keyword;
+	
 	public PageRequestVO() {
 		this.page = 1;
 		this.sizePerPage = 10;
@@ -43,10 +46,28 @@ public class PageRequestVO {
 		return this.sizePerPage;
 	}
 	
+	public String getSearchType() {
+		return searchType;
+	}
+	
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+	
+	public String getKeyword() {
+		return keyword;
+	}
+	
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+	
 	public String toUriStringByPage(int page) {
 		UriComponents uriComponents = UriComponentsBuilder.newInstance()
 				.queryParam("page", page)
 				.queryParam("size", this.sizePerPage)
+				.queryParam("searchType", this.searchType)
+				.queryParam("keyword", this.keyword)
 				.build();
 		
 		return uriComponents.toUriString();
@@ -54,5 +75,13 @@ public class PageRequestVO {
 	
 	public String toUriString() {
 		return toUriStringByPage(this.page);
+	}
+	
+	public String toUriStringForSearchAction(int page) {
+		UriComponents uriComponents = UriComponentsBuilder.newInstance()
+				.queryParam("page", page)
+				.build();
+		
+		return uriComponents.toUriString();
 	}
 }

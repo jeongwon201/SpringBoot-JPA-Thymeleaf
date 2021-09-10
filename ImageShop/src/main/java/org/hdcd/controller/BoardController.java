@@ -1,9 +1,13 @@
 package org.hdcd.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hdcd.common.security.domain.CustomUser;
 import org.hdcd.domain.Board;
 import org.hdcd.domain.Member;
 import org.hdcd.domain.PageRequestVO;
+import org.hdcd.dto.CodeLabelValue;
 import org.hdcd.dto.PaginationDTO;
 import org.hdcd.service.BoardService;
 import org.springframework.data.domain.Page;
@@ -52,7 +56,22 @@ public class BoardController {
 	public void list(@ModelAttribute("pgrq") PageRequestVO pageRequestVO, Model model) throws Exception {
 		Page<Board> page = service.list(pageRequestVO);
 		
-		model.addAttribute("pgntn", new PaginationDTO<Board>(page));
+		//PaginationDTO<Board> pagination = new PaginationDTO<>(page);
+		//pagination.setPageRequest(pageRequestVO);
+		
+		model.addAttribute("pgntn", new PaginationDTO<>(page));
+		
+		List<CodeLabelValue> searchTypeCodeValueList = new ArrayList<CodeLabelValue>();
+		
+		searchTypeCodeValueList.add(new CodeLabelValue("n", "---"));
+		searchTypeCodeValueList.add(new CodeLabelValue("t", "Title"));
+		searchTypeCodeValueList.add(new CodeLabelValue("c", "Content"));
+		searchTypeCodeValueList.add(new CodeLabelValue("w", "Writer"));
+		searchTypeCodeValueList.add(new CodeLabelValue("tc", "Title OR Content"));
+		searchTypeCodeValueList.add(new CodeLabelValue("cw", "Content OR Writer"));
+		searchTypeCodeValueList.add(new CodeLabelValue("tcw", "Title OR Content OR Writer"));
+		
+		model.addAttribute("searchTypeCodeValueList", searchTypeCodeValueList);
 	}
 	
 	@GetMapping("/read")
@@ -73,6 +92,9 @@ public class BoardController {
 		
 		rttr.addFlashAttribute("page", pageRequestVO.getPage());
 		rttr.addFlashAttribute("sizePerPage", pageRequestVO.getSizePerPage());
+		
+		rttr.addAttribute("searchType", pageRequestVO.getSearchType());
+		rttr.addAttribute("keyword", pageRequestVO.getKeyword());
 
 		rttr.addFlashAttribute("msg", "SUCCESS");
 		
@@ -86,6 +108,9 @@ public class BoardController {
 		
 		rttr.addFlashAttribute("page", pageRequestVO.getPage());
 		rttr.addFlashAttribute("sizePerPage", pageRequestVO.getSizePerPage());
+		
+		rttr.addAttribute("searchType", pageRequestVO.getSearchType());
+		rttr.addAttribute("keyword", pageRequestVO.getKeyword());
 		
 		rttr.addAttribute("msg", "SUCCESS");
 		

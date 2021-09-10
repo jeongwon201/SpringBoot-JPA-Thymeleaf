@@ -14,7 +14,7 @@
 
 	<div layout:fragment="content">
 	
-		<h2 th:text="#{user.header.read}">회원 게시판 상세보기</h2>
+		<h2 th:text="#{board.header.read}">회원 게시판 상세보기</h2>
 		
 		<form id="board" action="list.html" th:action="@{/board/remove}" th:object="${board}" method="POST">
 			
@@ -22,6 +22,9 @@
 			
 			<input type="hidden" name="page" th:value="${pgrq.page}" />
 			<input type="hidden" name="sizePerPage" th:value="${pgrq.sizePerPage}" />
+			
+			<input type="hidden" name="searchType" th:value="${pgrq.searchType}" />
+			<input type="hidden" name="keyword" th:value="${pgrq.keyword}" />
 			
 			<table>
 				<tr>

@@ -25,14 +25,15 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public Page<Board> list(PageRequestVO pageRequestVO) throws Exception {
-		int pageNumber = pageRequestVO.getPage() -1;
+		String searchType = pageRequestVO.getSearchType();
+		String keyword = pageRequestVO.getKeyword();
+		
+		int pageNumber = pageRequestVO.getPage() - 1;
 		int sizePerPage = pageRequestVO.getSizePerPage();
 		
-		Pageable pageRequest = PageRequest.of(pageNumber,  sizePerPage, Sort.Direction.DESC, "boardNo");
+		Pageable pageRequest = PageRequest.of(pageNumber, sizePerPage, Sort.Direction.DESC, "boardNo");
 		
-		Page<Board> page = repository.findAll(pageRequest);
-		
-		return page;
+		return repository.getSearchPage(searchType, keyword, pageRequest);
 	}
 
 	@Override
