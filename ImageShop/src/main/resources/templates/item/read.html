@@ -16,7 +16,12 @@
 	
 		<h2 th:text="#{item.header.read}">상품 상세보기</h2>
 		
-		<form id="item" action="list.html" th:object="${item}" method="POST">
+		<form id="item" action="list.html" th:action="@{/item/buy}" th:object="${item}" method="POST">
+		
+			<input type="hidden" name="itemId" th:field="*{itemId}" />
+			<input type="hidden" name="pictureUrl" th:field="*{pictureUrl}" />
+			<input type="hidden" name="previewUrl" th:field="*{previewUrl}" />
+		
 			<table>
 				<tr>
 					<td th:text="#{item.itemName}">상품명</td>
@@ -39,12 +44,19 @@
 		</form>
 		
 		<div>
+			<button type="submit" id="btnBuy" th:text="#{action.buy}">구매</button>
 			<button type="submit" id="btnList" th:text="#{action.list}">목록</button>
 		</div>
 		
 		
 		<script>
 			$(document).ready(function() {
+				
+				$("#btnBuy").on("click", function() {
+					var formObj = $("#item");
+					
+					formObj.submit();
+				})
 				
 				$("#btnList").on("click", function() {
 					self.location = "list";

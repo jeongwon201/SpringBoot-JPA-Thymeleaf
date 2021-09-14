@@ -4,17 +4,24 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
+import org.hdcd.common.security.domain.CustomUser;
 import org.hdcd.domain.Item;
+import org.hdcd.domain.Member;
 import org.hdcd.prop.ShopProperties;
 import org.hdcd.service.ItemService;
+import org.hdcd.service.MemberService;
+import org.hdcd.service.UserItemService;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -33,7 +40,13 @@ import lombok.RequiredArgsConstructor;
 public class ItemController {
 
 	private final ItemService itemService;
+	
+	private final MemberService memberService;
 
+	private final UserItemService userItemService;
+
+	private final MessageSource messageSource;
+	
 	private final ShopProperties shopProperties;
 
 	@GetMapping("/register")
@@ -51,10 +64,13 @@ public class ItemController {
 		MultipartFile previewFile = item.getPreview();
 
 		String createdPictureFileName = uploadFile(pictureFile.getOriginalFilename(), pictureFile.getBytes());
-		String createdPreviewFilename = uploadFile(previewFile.getOriginalFilename(), previewFile.getBytes());
-
+		String createdPreviewFileName = uploadFile(previewFile.getOriginalFilename(), previewFile.getBytes());
+		
+		System.out.println(pictureFile.getOriginalFilename());
+		System.out.println(previewFile.getOriginalFilename());
+		
 		item.setPictureUrl(createdPictureFileName);
-		item.setPreviewUrl(createdPreviewFilename);
+		item.setPreviewUrl(createdPreviewFileName);
 
 		itemService.register(item);
 
@@ -133,11 +149,35 @@ public class ItemController {
 
 		return "redirect:/item/list";
 	}
+	
+	@PostMapping("/buy")
+	public String buy(Long itemId, RedirectAttributes rttr, Authentication authentication) throws Exception {
+		CustomUser customUser = (CustomUser) authentication.getPrincipal();
+		Member member = customUser.getMember();
+		
+		Long userNo = member.getUserNo();
+		
+		member.setCoin(memberService.getCoin(userNo));
+		
+		Item item = itemService.read(itemId);
+		
+		userItemService.register(member, item);
+		
+		String message = messageSource.getMessage("item.purchaseComplete", null, Locale.KOREAN);
+		rttr.addFlashAttribute("msg", message);
+		
+		return "redirect:/item/success";
+	}
 
+	@GetMapping("/success")
+	public String success() throws Exception {
+		return "item/success";
+	}
+	
 	private String uploadFile(String originalName, byte[] fileData) throws Exception {
 		UUID uid = UUID.randomUUID();
 
-		String createdFileName = uid.toString() + "_" + "originalName";
+		String createdFileName = uid.toString() + "_" + originalName;
 
 		String uploadPath = shopProperties.getUploadPath();
 		File target = new File(uploadPath, createdFileName);
