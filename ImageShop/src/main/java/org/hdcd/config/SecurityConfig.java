@@ -51,6 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/useritem/**").hasRole("MEMBER")
 			.antMatchers("/pds/list", "/pds/read", "/pds/getAttach/**", "/pds/downloadFile").permitAll()
 			.antMatchers("/pds/**").hasRole("ADMIN")
+			.antMatchers("/error/**").permitAll()
 			.anyRequest().authenticated();
 		
 		http.formLogin()

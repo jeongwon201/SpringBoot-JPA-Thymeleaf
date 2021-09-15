@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hdcd.common.exception.NotEnoughCoinException;
 import org.hdcd.domain.Item;
 import org.hdcd.domain.Member;
 import org.hdcd.domain.PayCoin;
@@ -48,6 +49,10 @@ public class UserItemServiceImpl implements UserItemService {
 		
 		int coin = memberEntity.getCoin();
 		int amount = payCoin.getAmount();
+		
+		if(coin < price) {
+			throw new NotEnoughCoinException("There is Not Enough Coin.");
+		}
 		
 		memberEntity.setCoin(coin - amount);
 		

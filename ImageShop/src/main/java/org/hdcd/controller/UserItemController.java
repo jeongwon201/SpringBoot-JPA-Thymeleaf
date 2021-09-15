@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.hdcd.common.exception.NotMyItemException;
 import org.hdcd.common.security.domain.CustomUser;
 import org.hdcd.domain.Member;
 import org.hdcd.domain.UserItem;
@@ -56,6 +57,13 @@ public class UserItemController {
 	public ResponseEntity<byte[]> download(Long userItemNo, Authentication authentication) throws Exception {
 		UserItem userItem = service.read(userItemNo);
 		
+		CustomUser customUser = (CustomUser) authentication.getPrincipal();
+		Member member = customUser.getMember();
+		
+		if(userItem.getUserNo() != member.getUserNo()) {
+			throw new NotMyItemException("It is Not My Item.");
+		}
+		
 		String fullName = userItem.getPictureUrl();
 		
 		InputStream in = null;
@@ -82,4 +90,11 @@ public class UserItemController {
 		return entity;
 	}
 	
+	@GetMapping("/notMyItem")
+	@PreAuthorize("hasRole('ADMIN', 'MEMBER')")
+	public void notMyItem(Model model) throws Exception {
+		
+	}
+	
+
 }
