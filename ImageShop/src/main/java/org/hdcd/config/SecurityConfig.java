@@ -6,6 +6,7 @@ import org.hdcd.common.security.CustomAccessDeniedHandler;
 import org.hdcd.common.security.CustomLoginSuccessHandler;
 import org.hdcd.common.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -30,8 +31,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		
 		http.authorizeRequests()
 			.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+			.requestMatchers(EndpointRequest.toAnyEndpoint()).hasAnyRole("ADMIN")
 			.antMatchers("/").permitAll()
 			.antMatchers("/auth/login").permitAll()
 			.antMatchers("/user/register", "/user/registerSuccess").permitAll()
