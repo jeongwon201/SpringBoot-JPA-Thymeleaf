@@ -15,22 +15,22 @@ public class NetUtils {
 		
 		if(ip == null) {
 			ip = request.getHeader("Proxy-Client-IP");
-			log.info(">>>> Proxy-Client-IP" + ip);
+			log.info(">>>> Proxy-Client-IP : " + ip);
 		}
 		
 		if(ip == null) {
 			ip = request.getHeader("WL-Proxy-Client-IP");
-			log.info(">>>> WL-Proxy-Client-IP" + ip);
+			log.info(">>>> WL-Proxy-Client-IP : " + ip);
 		}
 		
 		if(ip == null) {
-			ip = request.getHeader("HTTP-Client-IP");
-			log.info(">>>> HTTP-Client-IP" + ip);
+			ip = request.getHeader("HTTP-CLIENT-IP");
+			log.info(">>>> HTTP-CLIENT-IP : " + ip);
 		}
 		
 		if(ip == null) {
 			ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-			log.info(">>>> HTTP_X_FORWARDED_FOR" + ip);
+			log.info(">>>> HTTP_X_FORWARDED_FOR : " + ip);
 		}
 		
 		if(ip == null) {

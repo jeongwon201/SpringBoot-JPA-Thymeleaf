@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/board/list", "/board/read").permitAll()
 			.antMatchers("/board/remove").hasAnyRole("MEMBER", "ADMIN")
 			.antMatchers("/board/**").hasRole("MEMBER")
-			.antMatchers("/notice/list", "notice/read").permitAll()
+			.antMatchers("/notice/list", "/notice/read").permitAll()
 			.antMatchers("/notice/**").hasRole("ADMIN")
 			.antMatchers("/item/list").permitAll()
 			.antMatchers("/item/read", "/item/picture", "/item/display").hasAnyRole("MEMBER", "ADMIN")
