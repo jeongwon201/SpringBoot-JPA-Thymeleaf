@@ -1,2 +1,2 @@
-# ImageShop-Clone-SpringBoot
+# ImageShop
 practice
