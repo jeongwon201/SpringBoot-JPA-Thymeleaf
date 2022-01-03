@@ -1,2 +1,2 @@
-# SpringBoot-JPA-Thymeleaf
+# ImageShop-Clone-SpringBoot
 practice
